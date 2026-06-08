@@ -1,210 +1,182 @@
-document.addEventListener("DOMContentLoaded", () => {
-    
-    /* ==========================================================================
-       1. SISTEMA DE ACESSIBILIDADE FLUTUANTE
-       ========================================================================== */
-    const toggleBtn = document.getElementById("btn-acessibilidade-toggle");
-    const menuAcessibilidade = document.getElementById("menu-acessibilidade");
-    const btnAumentarFonte = document.getElementById("btn-aumentar-fonte");
-    const btnDiminuirFonte = document.getElementById("btn-diminuir-fonte");
-    const btnTema = document.getElementById("btn-tema");
-    const btnLerVoz = document.getElementById("btn-ler-voz");
-    const btnPararVoz = document.getElementById("btn-parar-voz");
-    
-    let fontSizeAtual = 100; // percentual base para o body/html
-    
-    // Abrir/Fechar painel flutuante
-    toggleBtn.addEventListener("click", () => {
-        const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
-        toggleBtn.setAttribute("aria-expanded", !isExpanded);
-        menuAcessibilidade.setAttribute("aria-hidden", isExpanded);
-        menuAcessibilidade.classList.toggle("active");
-    });
+// ==========================================================================
+// ACORDEON INTERATIVO (GESTÃO DE CONTEÚDO EXPANSÍVEL)
+// ==========================================================================
+document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        const contentId = trigger.getAttribute('aria-controls');
+        const content = document.getElementById(contentId);
+        const icon = trigger.querySelector('.accordion-icon');
 
-    // Controle de tamanho de fontes via multiplicador adaptável
-    btnAumentarFonte.addEventListener("click", () => {
-        if(fontSizeAtual < 140) {
-            fontSizeAtual += 10;
-            document.documentElement.style.fontSize = fontSizeAtual + "%";
-        }
-    });
-
-    btnDiminuirFonte.addEventListener("click", () => {
-        if(fontSizeAtual > 80) {
-            fontSizeAtual -= 10;
-            document.documentElement.style.fontSize = fontSizeAtual + "%";
-        }
-    });
-
-    // Alternador de Modo Claro / Escuro
-    btnTema.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
-        const isDark = document.body.classList.contains("dark-mode");
-        btnTema.textContent = isDark ? "Alternar Modo Claro" : "Alternar Modo Escuro";
-    });
-
-    /* ==========================================================================
-       2. SPEECH SYNTHESIS API (LEITURA ACESSÍVEL DE VOZ NATIIVA)
-       ========================================================================== */
-    let sinteseVoz = window.speechSynthesis;
-    let atualUtterance = null;
-
-    btnLerVoz.addEventListener("click", () => {
-        // Interrompe leitura prévia se houver
-        if (sinteseVoz.speaking) {
-            sinteseVoz.cancel();
-        }
-
-        // Obtém apenas os elementos textuais limpos dentro do escopo do conteúdo principal
-        const conteudoPrincipal = document.getElementById("conteudo-principal");
-        
-        // Coleta textos de parágrafos, cabeçalhos de conteúdo e blockquotes de forma linear
-        // Ignora botões, formulários e áreas de navegação da barra de acessibilidade
-        const elementosTexto = conteudoPrincipal.querySelectorAll("p, h2, h3, li, strong, em");
-        let textoParaLer = "";
-        
-        elementosTexto.forEach(el => {
-            // Verifica se o elemento não pertence à área de formulários e botões interativos
-            if(!el.closest("form") && !el.closest("button")) {
-                textoParaLer += el.textContent + ". ";
+        // Fechar todos os outros itens para manter o visual limpo
+        document.querySelectorAll('.accordion-trigger').forEach(otherTrigger => {
+            if (otherTrigger !== trigger) {
+                otherTrigger.setAttribute('aria-expanded', 'false');
+                const otherContentId = otherTrigger.getAttribute('aria-controls');
+                document.getElementById(otherContentId).setAttribute('hidden', '');
+                otherTrigger.querySelector('.accordion-icon').textContent = '+';
             }
         });
 
-        if (textoParaLer.trim() !== "") {
-            atualUtterance = new SpeechSynthesisUtterance(textoParaLer);
-            atualUtterance.lang = "pt-BR";
-            atualUtterance.rate = 1.0; // velocidade natural
-
-            atualUtterance.onstart = () => {
-                btnLerVoz.disabled = true;
-                btnPararVoz.disabled = false;
-                btnLerVoz.textContent = "Lendo... 🔊";
-            };
-
-            atualUtterance.onend = () => {
-                btnLerVoz.disabled = false;
-                btnPararVoz.disabled = true;
-                btnLerVoz.textContent = "Ouvir Texto 🔊";
-            };
-
-            atualUtterance.onerror = () => {
-                btnLerVoz.disabled = false;
-                btnPararVoz.disabled = true;
-                btnLerVoz.textContent = "Ouvir Texto 🔊";
-            };
-
-            sinteseVoz.speak(atualUtterance);
+        // Alternar o estado do item atual
+        trigger.setAttribute('aria-expanded', !expanded);
+        if (!expanded) {
+            content.removeAttribute('hidden');
+            icon.textContent = '−';
+        } else {
+            content.setAttribute('hidden', '');
+            icon.textContent = '+';
         }
     });
+});
 
-    btnPararVoz.addEventListener("click", () => {
-        if (sinteseVoz.speaking) {
-            sinteseVoz.cancel();
-            btnLerVoz.disabled = false;
-            btnPararVoz.disabled = true;
-            btnLerVoz.textContent = "Ouvir Texto 🔊";
-        }
-    });
+// ==========================================================================
+// FORMULÁRIO DE INSCRIÇÃO COM VALIDAÇÃO ROBUSTA
+// ==========================================================================
+const formSeminario = document.getElementById('form-seminario');
+const formSuccess = document.getElementById('form-success');
 
-    // Cancela a voz se o usuário fechar ou mudar de página repentinamente
-    window.addEventListener("beforeunload", () => {
-        if (sinteseVoz.speaking) {
-            sinteseVoz.cancel();
-        }
-    });
+formSeminario.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let isValid = true;
 
-    /* ==========================================================================
-       3. SEÇÃO EXPANSÍVEL (ACCORDION INTERATIVO)
-       ========================================================================== */
-    const accordionHeaders = document.querySelectorAll(".accordion-header");
+    const nome = document.getElementById('nome');
+    const email = document.getElementById('email');
+    const cidade = document.getElementById('cidade');
+    const estado = document.getElementById('estado');
 
-    accordionHeaders.forEach(header => {
-        header.addEventListener("click", () => {
-            const isExpanded = header.getAttribute("aria-expanded") === "true";
-            const panel = header.nextElementSibling;
-            
-            // Fecha todos os outros antes de abrir o atual (comportamento exclusivo moderno)
-            accordionHeaders.forEach(otherHeader => {
-                if(otherHeader !== header) {
-                    otherHeader.setAttribute("aria-expanded", "false");
-                    otherHeader.nextElementSibling.style.maxHeight = null;
-                    otherHeader.nextElementSibling.setAttribute("aria-hidden", "true");
-                }
-            });
+    // Validação do Nome
+    if (nome.value.trim().length < 3) {
+        document.getElementById('error-nome').textContent = 'Por favor, insira seu nome completo.';
+        isValid = false;
+    } else {
+        document.getElementById('error-nome').textContent = '';
+    }
 
-            // Alterna o estado do item clicado
-            header.setAttribute("aria-expanded", !isExpanded);
-            panel.setAttribute("aria-hidden", isExpanded);
+    // Validação de E-mail
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value.trim())) {
+        document.getElementById('error-email').textContent = 'Insira um e-mail válido.';
+        isValid = false;
+    } else {
+        document.getElementById('error-email').textContent = '';
+    }
 
-            if (!isExpanded) {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-            } else {
-                panel.style.maxHeight = null;
-            }
-        });
-    });
+    // Validação de Cidade
+    if (cidade.value.trim() === '') {
+        document.getElementById('error-cidade').textContent = 'A cidade é obrigatória.';
+        isValid = false;
+    } else {
+        document.getElementById('error-cidade').textContent = '';
+    }
 
-    /* ==========================================================================
-       4. PROCESSAMENTO DO FORMULÁRIO DE INSCRIÇÃO DO SEMINÁRIO
-       ========================================================================== */
-    const formSeminario = document.getElementById("form-seminario");
-    const formFeedback = document.getElementById("form-feedback");
+    // Validação de Estado
+    if (estado.value.trim().length !== 2) {
+        document.getElementById('error-estado').textContent = 'Use a sigla com 2 letras (Ex: SP).';
+        isValid = false;
+    } else {
+        document.getElementById('error-estado').textContent = '';
+    }
 
-    formSeminario.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        // Simulação de captura de dados limpos do formulário
-        const nome = document.getElementById("nome").value;
-        const email = document.getElementById("email").value;
-        
-        // Feedback visual moderno e acessível imediato
-        formFeedback.className = "form-feedback success";
-        formFeedback.textContent = `Inscrição realizada com sucesso! Parabéns, ${nome}. Enviamos o link de acesso exclusivo para o e-mail: ${email}.`;
-        
-        // Reseta o formulário mantendo as diretrizes de usabilidade limpa
+    if (isValid) {
         formSeminario.reset();
+        formSuccess.removeAttribute('hidden');
+        setTimeout(() => formSuccess.setAttribute('hidden', ''), 5000);
+    }
+});
+
+// ==========================================================================
+// ÁREA DE INTERAÇÃO (COMENTÁRIOS DO LEITOR)
+// ==========================================================================
+const formComentario = document.getElementById('form-comentario');
+const listaComentarios = document.getElementById('lista-comentarios');
+
+formComentario.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const txtComentario = document.getElementById('comentario');
+
+    if (txtComentario.value.trim() !== '') {
+        const novoComentario = document.createElement('div');
+        novoComentario.className = 'comment-item';
+        novoComentario.innerHTML = `<strong>Leitor Anônimo:</strong> <p>${escapeHTML(txtComentario.value)}</p>`;
         
-        // Remove feedback após tempo determinado
-        setTimeout(() => {
-            formFeedback.textContent = "";
-            formFeedback.className = "form-feedback";
-        }, 8000);
+        listaComentarios.prepend(novoComentario);
+        txtComentario.value = '';
+    }
+});
+
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+}
+
+// ==========================================================================
+// ACESSIBILIDADE PANEL & SPEECH SYNTHESIS API (LEITURA POR VOZ)
+// ==========================================================================
+const toggleAcc = document.querySelector('.accessibility-toggle');
+const menuAcc = document.querySelector('.accessibility-menu');
+
+toggleAcc.addEventListener('click', () => {
+    const isVisible = !menuAcc.hasAttribute('hidden');
+    toggleAcc.setAttribute('aria-expanded', isVisible);
+    if (isVisible) menuAcc.setAttribute('hidden', '');
+    else menuAcc.removeAttribute('hidden');
+});
+
+// Controle de tamanho de fonte
+let currentFontSize = 100;
+document.getElementById('btn-aumentar-fonte').addEventListener('click', () => {
+    currentFontSize += 10;
+    document.documentElement.style.fontSize = `${currentFontSize}%`;
+});
+document.getElementById('btn-diminuir-fonte').addEventListener('click', () => {
+    if (currentFontSize > 70) {
+        currentFontSize -= 10;
+        document.documentElement.style.fontSize = `${currentFontSize}%`;
+    }
+});
+
+// Alternador de Modo Escuro
+document.getElementById('btn-modo-escuro').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+// Leitura de Voz Nativa (Apenas conteúdo principal solicitado)
+let speechUtterance = null;
+const btnLer = document.getElementById('btn-ler-voz');
+const btnParar = document.getElementById('btn-parar-voz');
+
+btnLer.addEventListener('click', () => {
+    // Captura apenas o texto dos blocos legíveis principais (ignora menus/botões)
+    const blocks = document.querySelectorAll('.readable-content');
+    let textToRead = "";
+    blocks.forEach(block => {
+        textToRead += block.innerText + " ";
     });
 
-    /* ==========================================================================
-       5. ÁREA DE COMENTÁRIOS E INTERAÇÃO DINÂMICA DO LEITOR
-       ========================================================================== */
-    const formComentario = document.getElementById("form-comentario");
-    const txtComentario = document.getElementById("txt-comentario");
-    const listaComentarios = document.getElementById("comentarios-lista");
+    if (textToRead.trim() !== "") {
+        window.speechSynthesis.cancel(); // Para qualquer leitura em andamento
+        
+        speechUtterance = new SpeechSynthesisUtterance(textToRead);
+        speechUtterance.lang = 'pt-BR';
+        
+        speechUtterance.onstart = () => {
+            btnLer.disabled = true;
+            btnParar.disabled = false;
+        };
+        
+        speechUtterance.onend = () => {
+            btnLer.disabled = false;
+            btnParar.disabled = true;
+        };
 
-    formComentario.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        const texto = txtComentario.value.trim();
-        if(texto === "") return;
+        window.speechSynthesis.speak(speechUtterance);
+    }
+});
 
-        // Criação de elemento de comentário estruturado com tags semânticas e acessíveis
-        const cardComentario = document.createElement("div");
-        cardComentario.className = "comentario-item";
-        
-        const metaComentario = document.createElement("div");
-        metaComentario.className = "comentario-meta";
-        metaComentario.textContent = `Leitor Anônimo • Há poucos segundos`;
-        
-        const corpoComentario = document.createElement("p");
-        corpoComentario.textContent = texto;
-        corpoComentario.style.marginBottom = "0";
-        corpoComentario.style.marginTop = "4px";
-
-        cardComentario.appendChild(metaComentario);
-        cardComentario.appendChild(corpoComentario);
-        
-        // Insere o novo comentário no topo da lista dinâmica
-        listaComentarios.insertBefore(cardComentario, listaComentarios.firstChild);
-        
-        // Reseta campo de texto de forma limpa
-        txtComentario.value = "";
-    });
-
+btnParar.addEventListener('click', () => {
+    window.speechSynthesis.cancel();
+    btnLer.disabled = false;
+    btnParar.disabled = true;
 });
