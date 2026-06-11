@@ -1,6 +1,3 @@
-/* ==========================================================================
-   VARIÁVEIS CONFIGURÁVEIS (DESIGN SYSTEM PREMIUM)
-   ========================================================================== */
 :root {
     /* Paleta de Cores Obrigatória */
     --color-azul: #0052CC;
@@ -51,10 +48,6 @@ body.dark-mode {
     --color-branco: #091E42;
     --color-prata: #102A45;
 }
-
-/* ==========================================================================
-   RESET & BOAS PRÁTICAS BASE
-   ========================================================================== */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -108,10 +101,6 @@ body {
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-medium);
 }
-
-/* ==========================================================================
-   CAIXA FLUTUANTE DE ACESSIBILIDADE
-   ========================================================================== */
 .acessibilidade-container {
     position: fixed;
     top: 100px;
@@ -174,10 +163,6 @@ body {
     background-color: var(--color-azul-celeste);
     color: var(--color-preto);
 }
-
-/* ==========================================================================
-   HEADER / NAVEGAÇÃO
-   ========================================================================== */
 .header {
     background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);
@@ -249,10 +234,6 @@ body.dark-mode .logo-text-forte {
     background-color: var(--color-prata);
     color: var(--color-azul);
 }
-
-/* ==========================================================================
-   HERO SECTION
-   ========================================================================== */
 .hero {
     background: linear-gradient(135deg, #0B4624 0%, #052111 100%);
     color: var(--text-light);
@@ -306,10 +287,6 @@ body.dark-mode .logo-text-forte {
     gap: var(--spacing-md);
     flex-wrap: wrap;
 }
-
-/* ==========================================================================
-   BOTÕES E COMPONENTES DE INTERFACE INTERATIVA
-   ========================================================================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -354,10 +331,6 @@ body.dark-mode .logo-text-forte {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 171, 0, 0.3);
 }
-
-/* ==========================================================================
-   ESTRUTURA DE CORPO DE LAYOUT (GRID PRINCIPAL)
-   ========================================================================== */
 .main-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -447,10 +420,6 @@ body.dark-mode .quote-final {
     letter-spacing: 0.5px;
     margin-bottom: var(--spacing-sm);
 }
-
-/* ==========================================================================
-   ESTRUTURA DE IMAGENS REQUISITADAS (PLACEHOLDERS PREMIUM)
-   ========================================================================== */
 .imagem {
     width: 100%;
     border-radius: var(--radius-md);
@@ -502,10 +471,6 @@ body.dark-mode .quote-final {
     pointer-events: none;
     border: 1px solid rgba(0,0,0,0.05);
 }
-
-/* ==========================================================================
-   SEÇÕES EXPANSÍVEIS (ACCORDION JAVASCRIPT)
-   ========================================================================== */
 .accordion {
     display: flex;
     flex-direction: column;
@@ -571,10 +536,6 @@ body.dark-mode .quote-final {
     margin-bottom: 0;
     font-size: 1rem;
 }
-
-/* ==========================================================================
-   FORMULÁRIO LATERAL DE INSCRIÇÃO
-   ========================================================================== */
 .sidebar-area {
     position: sticky;
     top: 100px;
@@ -664,10 +625,6 @@ body.dark-mode .form-group input, body.dark-mode .form-group textarea {
     padding: 8px;
     background-color: rgba(0, 255, 136, 0.1);
 }
-
-/* ==========================================================================
-   ÁREA DE COMENTÁRIOS
-   ========================================================================== */
 .comments-section {
     background-color: var(--bg-card);
     padding: var(--spacing-lg);
@@ -726,10 +683,6 @@ body.dark-mode .form-group input, body.dark-mode .form-group textarea {
     clip: rect(0,0,0,0);
     border: 0;
 }
-
-/* ==========================================================================
-   RODAPÉ PRO
-   ========================================================================== */
 .footer {
     background-color: var(--color-preto);
     color: rgba(255, 255, 255, 0.8);
@@ -776,10 +729,6 @@ body.dark-mode .form-group input, body.dark-mode .form-group textarea {
     color: var(--color-amarelo);
     text-decoration: underline;
 }
-
-/* ==========================================================================
-   MEDIA QUERIES (RESPONSIVIDADE FLUIDA)
-   ========================================================================== */
 @media (max-width: 1024px) {
     .main-layout {
         grid-template-columns: 1fr;

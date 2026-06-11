@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
-    /* ==========================================================================
-       1. SISTEMA DE ACESSIBILIDADE FLUTUANTE
-       ========================================================================== */
     const toggleBtn = document.getElementById("btn-acessibilidade-toggle");
     const menuAcessibilidade = document.getElementById("menu-acessibilidade");
     const btnAumentarFonte = document.getElementById("btn-aumentar-fonte");
@@ -42,10 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const isDark = document.body.classList.contains("dark-mode");
         btnTema.textContent = isDark ? "Alternar Modo Claro" : "Alternar Modo Escuro";
     });
-
-    /* ==========================================================================
-       2. SPEECH SYNTHESIS API (LEITURA ACESSÍVEL DE VOZ NATIIVA)
-       ========================================================================== */
     let sinteseVoz = window.speechSynthesis;
     let atualUtterance = null;
 
@@ -112,10 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             sinteseVoz.cancel();
         }
     });
-
-    /* ==========================================================================
-       3. SEÇÃO EXPANSÍVEL (ACCORDION INTERATIVO)
-       ========================================================================== */
     const accordionHeaders = document.querySelectorAll(".accordion-header");
 
     accordionHeaders.forEach(header => {
@@ -143,10 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-
-    /* ==========================================================================
-       4. PROCESSAMENTO DO FORMULÁRIO DE INSCRIÇÃO DO SEMINÁRIO
-       ========================================================================== */
     const formSeminario = document.getElementById("form-seminario");
     const formFeedback = document.getElementById("form-feedback");
 
@@ -170,10 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
             formFeedback.className = "form-feedback";
         }, 8000);
     });
-
-    /* ==========================================================================
-       5. ÁREA DE COMENTÁRIOS E INTERAÇÃO DINÂMICA DO LEITOR
-       ========================================================================== */
     const formComentario = document.getElementById("form-comentario");
     const txtComentario = document.getElementById("txt-comentario");
     const listaComentarios = document.getElementById("comentarios-lista");
