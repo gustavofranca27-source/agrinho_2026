@@ -13,7 +13,7 @@
     --bg-card: var(--color-prata);
     --bg-dark-accent: var(--color-verde-escuro);
     --text-primary: var(--color-preto);
-    --text-secondary: #42526E;
+    --text-secondary: #0756df;
     --text-light: var(--color-branco);
     
     /* Fontes Fluidas Usando clamp() */
